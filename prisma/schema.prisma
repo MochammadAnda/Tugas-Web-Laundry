@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum KategoriExpense {
+  Operasional
+  Gaji
+  Pemasaran
+  Lainnya
+}
+
+enum UserRole {
+  admin
+  user
+}
+
+enum SatuanService {
+  KG
+  PCS
+  PSG
+  m2
+  Bulan
+}
+
+enum StatusService {
+  aktif
+  tidak_aktif
+}
+
+enum StatusPesanan {
+  Menunggu
+  Sedang
+  Siap
+  Selesai
+  Dibatalkan
+}
+
+enum StatusBayar {
+  Belum_Lunas
+  Lunas
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  nama          String
+  role          UserRole
+  email         String   @unique
+  password_hash String
+  telepon       String?
+  alamat        String?
+  created_at    DateTime @default(now())
+
+  orders Order[]
+}
+
+model Asset {
+  id           Int      @id @default(autoincrement())
+  namaAset     String
+  hargaBeli    Decimal  @db.Decimal(15, 2)
+  nilaiSisa    Decimal  @db.Decimal(15, 2)
+  umurEkonomis Int
+  tanggalBeli  DateTime @db.Date
+}
+
+model Expense {
+  id        Int             @id @default(autoincrement())
+  namaBeban String
+  kategori  KategoriExpense
+  jumlah    Decimal         @db.Decimal(15, 2)
+  tanggal   DateTime        @db.Date
+}
+
+model Service {
+  id           Int           @id @default(autoincrement())
+  namaLayanan  String        @unique
+  deskripsi    String?
+  hargaPerUnit Decimal       @db.Decimal(10, 2)
+  satuan       SatuanService
+  status       StatusService
+
+  orderDetails OrderDetail[]
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int
+  layanan       String
+  beratKg       Decimal?      @db.Decimal(10, 2)
+  tanggalPesan  DateTime      @default(now())
+  tanggalAmbil  DateTime?     @db.Date
+  totalHarga    Decimal       @db.Decimal(10, 2)
+  statusPesanan StatusPesanan
+  isHiddenUser  Boolean       @default(false)
+
+  user         User          @relation(fields: [userId], references: [id])
+  payments     Payment[]
+  orderDetails OrderDetail[]
+}
+
+model Payment {
+  id           Int         @id @default(autoincrement())
+  orderId      Int
+  tanggalBayar DateTime    @default(now())
+  jumlahBayar  Decimal     @db.Decimal(10, 2)
+  metodeBayar  String
+  statusBayar  StatusBayar
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model OrderDetail {
+  id            Int     @id @default(autoincrement())
+  orderId       Int
+  serviceId     Int
+  keterangan    String?
+  beratQty      Decimal @db.Decimal(10, 2)
+  hargaSubtotal Decimal @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+}
