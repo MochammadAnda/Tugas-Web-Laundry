@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// MExpense
+enum MExpenseCategory {
+  OPERATIONAL
+  SALARY
+  MARKETING
+  ETC
+}
+
+enum MExpenseStatus {
+  PENDING
+  DONE
+}
+
+model MExpense {
+  id         Int              @id @default(autoincrement())
+  name       String
+  category   MExpenseCategory
+  amount     Decimal
+  due_date   DateTime
+  status     MExpenseStatus
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+
+  @@map("m_expenses")
+}
+
+// MAsset
+model MAsset {
+  id            Int      @id @default(autoincrement())
+  name          String
+  buy_price     Decimal
+  nilai_sisa    Decimal
+  umur_ekonomis Decimal
+  buy_date      DateTime
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("m_assets")
+}
+
+// MService
+enum MServiceUnit {
+  KG
+  PCS
+}
+
+enum MServiceStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model MService {
+  id             Int            @id @default(autoincrement())
+  name           String
+  description    String
+  price_per_unit Decimal
+  unit           MServiceUnit
+  status         MServiceStatus
+  orders         Order[]
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+
+  @@map("m_services")
+}
+
+// MPackage
+model MPackage {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String
+  price        Decimal
+  quota        Decimal
+  userPackages UserPackage[]
+  transactions Transaction[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  @@map("m_packages")
+}
+
+// User
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  phone        String
+  address      String
+  role         UserRole
+  userPackages UserPackage[]
+  orders       Order[]
+  transactions Transaction[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  @@map("users")
+}
+
+// UserPackage
+model UserPackage {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  package_id Int
+  quota      Decimal
+  expired_at DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User             @relation(fields: [user_id], references: [id])
+  package MPackage         @relation(fields: [package_id], references: [id])
+  orders  Order[]
+  logs    UserPackageLog[]
+
+  @@map("user_packages")
+}
+
+// Order
+enum OrderDeliveryMethod {
+  PICKUP_DROP
+  SELF_PICKUP
+}
+
+enum OrderStatus {
+  PENDING
+  FAILED
+  SUCCESS
+  DONE
+}
+
+model Order {
+  id              Int                 @id @default(autoincrement())
+  user_id         Int
+  service_id      Int
+  quantity_kg     Decimal
+  delivery_method OrderDeliveryMethod
+  address         String
+  user_package_id Int?
+  status          OrderStatus
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @updatedAt
+
+  user            User             @relation(fields: [user_id], references: [id])
+  service         MService         @relation(fields: [service_id], references: [id])
+  user_package    UserPackage?     @relation(fields: [user_package_id], references: [id])
+  orderLogs       OrderLog[]
+  transactions    Transaction[]
+  userPackageLogs UserPackageLog[]
+
+  @@map("orders")
+}
+
+// OrderLog
+model OrderLog {
+  id         Int      @id @default(autoincrement())
+  order_id   Int
+  log        String
+  img_url    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  order Order @relation(fields: [order_id], references: [id])
+
+  @@map("order_logs")
+}
+
+// UserPackageLog
+enum UserPackageLogType {
+  INITIAL
+  TRANSACTION
+}
+
+model UserPackageLog {
+  id              Int                @id @default(autoincrement())
+  user_package_id Int
+  type            UserPackageLogType
+  quota           Decimal
+  order_id        Int?
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+
+  userPackage UserPackage @relation(fields: [user_package_id], references: [id])
+  order       Order?      @relation(fields: [order_id], references: [id])
+
+  @@map("user_package_logs")
+}
+
+// Transaction
+enum TransactionType {
+  ORDER
+  PACKAGE
+}
+
+enum TransactionStatus {
+  PENDING
+  FAILED
+  SUCCESS
+}
+
+model Transaction {
+  id          Int               @id @default(autoincrement())
+  user_id     Int
+  type        TransactionType
+  order_id    Int?
+  package_id  Int?
+  total_price Decimal
+  snap_token  String?
+  status      TransactionStatus
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
+
+  user    User      @relation(fields: [user_id], references: [id])
+  order   Order?    @relation(fields: [order_id], references: [id])
+  package MPackage? @relation(fields: [package_id], references: [id])
+
+  @@map("transactions")
+}
