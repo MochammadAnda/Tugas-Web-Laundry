@@ -196,6 +196,40 @@
           </div>
         </template>
 
+        <!-- Jika user sudah punya paket -->
+        <template x-if="!isLoading && packages.length > 0">
+          <div class="overflow-x-auto mt-6">
+            <table class="min-w-full bg-white rounded-lg shadow">
+              <thead>
+                <tr class="border-b">
+                  <th class="py-3 px-4 text-left">Nama Paket</th>
+                  <th class="py-3 px-4 text-left">Quota</th>
+                  <th class="py-3 px-4 text-left">Harga</th>
+                  <th class="py-3 px-4 text-left">Expired</th>
+                  <th class="py-3 px-4 text-left">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="item in packages" :key="item.id">
+                  <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3 px-4 font-semibold" x-text="item.package.name"></td>
+                    <td class="py-3 px-4" x-text="item.quota + ' kg'"></td>
+                    <td class="py-3 px-4" x-text="formatRupiah(item.package.price)"></td>
+                    <td class="py-3 px-4" x-text="new Date(item.expired_at).toLocaleDateString('id-ID')"></td>
+                    <td class="py-3 px-4">
+                      <button @click="fetchPackageLog(item.id)"
+                        class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                        Lihat Log
+                      </button>
+                    </td>
+                  </tr>
+
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
+
         <div class="mt-10 " x-data="packageUserPage">
 
           <h2 class="text-xl font-bold mb-4">Transaksi Pending</h2>
@@ -249,6 +283,50 @@
     </div>
     </main>
   </div>
+  </div>
+
+  <!-- Modal Log -->
+  <div x-show="isLogModalOpen" x-transition
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+
+    <div class="bg-white w-full max-w-lg rounded-lg shadow p-6">
+
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Riwayat Log Paket</h2>
+
+      <template x-if="selectedLogs.length === 0">
+        <p class="text-gray-500 text-center py-4">Tidak ada log tersedia.</p>
+      </template>
+
+      <template x-if="selectedLogs.length > 0">
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border rounded">
+            <thead>
+              <tr class="bg-gray-100 border-b">
+                <th class="py-2 px-4 text-left">Type</th>
+                <th class="py-2 px-4 text-left">Quota</th>
+                <th class="py-2 px-4 text-left">Tanggal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="log in selectedLogs" :key="log.id">
+                <tr class="border-b">
+                  <td class="py-2 px-4" x-text="log.type"></td>
+                  <td class="py-2 px-4" x-text="log.quota + ' kg'"></td>
+                  <td class="py-2 px-4" x-text="new Date(log.created_at).toLocaleDateString('id-ID')"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <div class="text-right mt-4">
+        <button @click="isLogModalOpen = false" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+          Tutup
+        </button>
+      </div>
+
+    </div>
   </div>
 </body>
 
