@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar Akun Baru - SuperLaundry</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "biru-utama": "#0052cc",
+              "biru-muda": "#f0f5ff",
+              "biru-teks": "#003380",
+            },
+          },
+        },
+      };
+    </script>
+
+    <script src="../../assets/js/jquery.min.js"></script>
+    <script src="../../assets/js/alpine.js" defer></script>
+  </head>
+  <body class="bg-biru-muda min-h-screen flex items-center justify-center py-12 px-4">
+    <div x-data="registerAuth" class="max-w-md w-full bg-white p-8 md:p-10 rounded-xl shadow-2xl">
+      <div>
+        <h2 class="text-center text-3xl font-extrabold text-biru-teks">Buat Akun Baru</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          Sudah punya akun?
+          <a href="login.html" class="font-medium text-biru-utama hover:text-blue-700"> Login di sini </a>
+        </p>
+      </div>
+
+      <div x-show="errorMessage" x-transition class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg my-6" style="display: none">
+        <p x-text="errorMessage"></p>
+      </div>
+
+      <form class="mt-8 space-y-5" @submit.prevent="submitRegister">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+          <input x-model="form.name" type="text" required class="mt-1 w-full px-3 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Nama Lengkap Anda" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Alamat Email</label>
+          <input x-model="form.email" type="email" required class="mt-1 w-full px-3 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="contoh@email.com" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Kata Sandi</label>
+          <input x-model="form.password" type="password" required class="mt-1 w-full px-3 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Minimal 8 karakter" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+          <input x-model="form.phone" type="tel" required class="mt-1 w-full px-3 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="08123456789" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
+          <textarea x-model="form.address" rows="3" required class="mt-1 w-full px-3 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Jalan, Nomor Rumah, Kota, dll."></textarea>
+        </div>
+
+        <div>
+          <button type="submit" class="w-full py-3 px-4 text-sm font-medium rounded-md text-white bg-biru-utama hover:bg-blue-700 transition duration-300 flex justify-center items-center" :disabled="isLoading">
+            <span x-show="!isLoading">Daftar Sekarang</span>
+            <span x-show="isLoading">Memproses...</span>
+          </button>
+        </div>
+
+        <div class="text-center pt-2">
+          <a href="index.html" class="font-medium text-gray-700 bg-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-white transition"> Kembali </a>
+        </div>
+      </form>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+  </body>
+</html>
