@@ -200,12 +200,12 @@
                 </template>
               </div>
 
-              <template x-for="menu in adminStaticMenu" :key="menu.page">
+              <template x-for="menu in adminStaticMenu" :key="menu.label">
                 <a
-                  href="#"
-                  @click.prevent="currentPage = menu.page"
+                  :href="menu.url ? menu.url : '#'"
+                  @click="menu.url ? true : (event.preventDefault(), currentPage = menu.page)"
                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200"
-                  :class="currentPage === menu.page ? 'bg-biru-utama font-semibold shadow-lg' : 'hover:bg-blue-800 text-blue-100'"
+                  :class="(currentPage === menu.page && !menu.url) ? 'bg-biru-utama font-semibold shadow-lg' : 'hover:bg-blue-800 text-blue-100'"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-html="menu.icon"></svg>
                   <span x-text="menu.label"></span>

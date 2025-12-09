@@ -71,43 +71,24 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    // async fetchMyPackages() {
-    //   const token = localStorage.getItem("token");
-    //   try {
-    //     // Mengambil daftar paket yang SUDAH DIBELI oleh user
-    //     const response = await fetch(this.apiUserPackageUrl, {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
-    //     const result = await response.json();
-
-    //     // Asumsi: result.data mengembalikan array paket milik user
-    //     if (result.status) {
-    //       // Cek struktur: apakah result.data array? atau result.data.userPackages?
-    //       // Menggunakan fallback aman:
-    //       this.myPackages = Array.isArray(result.data) ? result.data : result.data.userPackages || [];
-    //     }
-    //   } catch (error) {
-    //     console.error("Error user packages", error);
-    //   }
-    // },
-
     async fetchMyPackages() {
-      // Simulasi delay ambil paket user
-      console.log("Fetching dummy user packages...");
-      setTimeout(() => {
-        this.myPackages = [
-          {
-            id: 101,
-            remaining_quota: 8.5,
-            package: { name: "Paket Hemat 10KG" },
-          },
-          {
-            id: 102,
-            remaining_quota: 20,
-            package: { name: "Paket Setrika 50 PCS" },
-          },
-        ];
-      }, 500);
+      const token = localStorage.getItem("token");
+      try {
+        // Mengambil daftar paket yang SUDAH DIBELI oleh user
+        const response = await fetch(this.apiUserPackageUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const result = await response.json();
+
+        // Asumsi: result.data mengembalikan array paket milik user
+        if (result.status) {
+          // Cek struktur: apakah result.data array? atau result.data.userPackages?
+          // Menggunakan fallback aman:
+          this.myPackages = Array.isArray(result.data) ? result.data : result.data.userPackages || [];
+        }
+      } catch (error) {
+        console.error("Error user packages", error);
+      }
     },
 
     // --- SUBMIT ORDER ---
