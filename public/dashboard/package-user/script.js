@@ -71,7 +71,7 @@ document.addEventListener("alpine:init", () => {
         const result = await response.json();
 
         if (result.status) {
-          this.packages = result.data;
+          this.packages = result.data.userPackages;
         } else {
           this.packages = [];
           console.error("Gagal mengambil data paket:", result.message);
