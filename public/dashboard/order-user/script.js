@@ -120,7 +120,6 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-<<<<<<< HEAD
     async fetchMyPackages() {
       const token = localStorage.getItem("token");
       try {
@@ -138,7 +137,8 @@ document.addEventListener("alpine:init", () => {
         }
       } catch (error) {
         console.error("Error user packages", error);
-=======
+      }
+    },
     // ==========================
     // GET PACKAGES
     // ==========================
@@ -155,7 +155,6 @@ document.addEventListener("alpine:init", () => {
         this.myPackages = json.status ? json.data : [];
       } catch (err) {
         console.error("ERR PACKAGE:", err);
->>>>>>> 67d4424096e56907efd94223b03b44b28e65fa36
       }
     },
 
