@@ -40,3 +40,22 @@ export const store = async (req, res) => {
     return error(res, err.message, 400);
   }
 }
+
+export const getPackage = async (req, res) => {
+  try {
+    let data = await UserPackageService.getPackage();
+    return success(res, data, "Success get package");
+  } catch (err) {
+    return error(res, err.message, 400);
+  }
+}
+
+export const getTrxPending = async (req, res) => {
+  try {
+    let user_id = Number(req.user.id);
+    let data = await UserPackageService.getTrxPending(user_id);
+    return success(res, data, "Success get trx pending");
+  } catch (err) {
+    return error(res, err.message, 400);
+  }
+}

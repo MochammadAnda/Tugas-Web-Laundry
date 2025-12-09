@@ -51,3 +51,19 @@ export const store = async ({userId, packageId}) => {
 
     return newTransaction;
 }
+
+export const getPackage = async() => {
+    let data = await prisma.mPackage.findMany()
+    return data;
+}
+
+export const getTrxPending = async(user_id) => {
+    let data = await prisma.transaction.findMany({
+        where: {
+            status: "PENDING",
+            type: "PACKAGE",
+            user_id: user_id
+        }
+    })
+    return data
+}
