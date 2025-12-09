@@ -116,6 +116,25 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    async fetchMyPackages() {
+      const token = localStorage.getItem("token");
+      try {
+        // Mengambil daftar paket yang SUDAH DIBELI oleh user
+        const response = await fetch(this.apiUserPackageUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const result = await response.json();
+
+        // Asumsi: result.data mengembalikan array paket milik user
+        if (result.status) {
+          // Cek struktur: apakah result.data array? atau result.data.userPackages?
+          // Menggunakan fallback aman:
+          this.myPackages = Array.isArray(result.data) ? result.data : result.data.userPackages || [];
+        }
+      } catch (error) {
+        console.error("Error user packages", error);
+      }
+    },
     // ==========================
     // GET PACKAGES
     // ==========================
