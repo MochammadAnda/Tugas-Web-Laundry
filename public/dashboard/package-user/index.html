@@ -3,20 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - SuperLaundry</title>
+    <title>Beli Paket - SuperLaundry</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <script src="./script.js"></script>
 
     <script>
       tailwind.config = {
         theme: {
           extend: {
-            colors: {
-              "biru-utama": "#0052cc",
-              "biru-muda": "#f0f5ff",
-              "biru-teks": "#003380",
-            },
+            colors: { "biru-utama": "#0052cc", "biru-muda": "#f0f5ff", "biru-teks": "#003380" },
           },
         },
       };
@@ -34,8 +31,6 @@
       .text-biru-teks {
         color: #1e3a8a;
       }
-
-      /* Scrollbar kustom untuk sidebar */
       .sidebar-scroll::-webkit-scrollbar {
         width: 5px;
       }
@@ -49,7 +44,7 @@
     </style>
   </head>
 
-  <body class="bg-gray-100 font-sans antialiased" x-data="dashboardPage" x-cloak>
+  <body class="bg-gray-100 font-sans antialiased" x-data="packageUserPage" x-cloak>
     <div class="flex min-h-screen">
       <aside class="w-64 bg-biru text-white flex flex-col fixed h-full transition-transform transform md:translate-x-0 z-30 shadow-2xl" :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
         <div class="p-6 border-b border-blue-600/50 text-center">
@@ -59,16 +54,11 @@
             </svg>
           </div>
           <h3 class="font-bold text-lg tracking-wide truncate px-2" x-text="username"></h3>
-          <span class="inline-block px-3 py-1 mt-1 text-xs font-semibold bg-blue-600/40 text-blue-200 rounded-full uppercase tracking-wider" x-text="user_role"></span>
+          <span class="inline-block px-3 py-1 mt-1 text-xs font-semibold bg-blue-600/40 text-blue-200 rounded-full uppercase tracking-wider">Member</span>
         </div>
 
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto sidebar-scroll">
-          <a
-            href="#"
-            @click.prevent="currentPage = 'dashboard'"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200"
-            :class="currentPage === 'dashboard' ? 'bg-biru-utama font-semibold shadow-lg' : 'hover:bg-blue-800 text-blue-100'"
-          >
+          <a href="../../index.html" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-blue-800 text-blue-100">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -80,143 +70,33 @@
             <span>Dashboard</span>
           </a>
 
-          <template x-if="user_role === 'user'">
-            <div>
-              <button
-                @click="submenu.user = !submenu.user"
-                class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100"
-                :class="isUserPesananActive ? 'bg-blue-800/50' : ''"
-              >
-                <div class="flex items-center gap-3">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                  <span>Pemesanan</span>
-                </div>
-                <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.user ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </button>
-
-              <div x-show="submenu.user" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
-                <template x-for="item in userPesananMenu" :key="item.page">
-                  <a
-                    href="#"
-                    @click.prevent="currentPage = item.page"
-                    class="block px-4 py-2 text-sm rounded-r-lg transition-colors"
-                    :class="currentPage === item.page ? 'text-white font-semibold bg-blue-700/50' : 'text-blue-300 hover:text-white hover:bg-blue-800/30'"
-                    x-text="item.label"
-                  >
-                  </a>
-                </template>
+          <div>
+            <button @click="submenu.user = !submenu.user" class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100 bg-blue-800/50">
+              <div class="flex items-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <span>Pemesanan</span>
               </div>
+              <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.user ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
 
-              <div class="pt-4 pb-1">
-                <p class="px-4 text-xs font-bold text-blue-400 uppercase tracking-wider">Transaksi</p>
-              </div>
-              <template x-for="item in userTransactionMenu" :key="item.page">
-                <a
-                  href="#"
-                  @click.prevent="currentPage = item.page"
-                  class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200"
-                  :class="currentPage === item.page ? 'bg-biru-utama font-semibold shadow-lg' : 'hover:bg-blue-800 text-blue-100'"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-html="item.icon"></svg>
-                  <span x-text="item.label"></span>
-                </a>
-              </template>
+            <div x-show="submenu.user" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
+              <a href="../../index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Buat Pesanan Baru</a>
+              <a href="../../index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Status Pesanan</a>
+              <a href="../../index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Riwayat Pesanan</a>
             </div>
-          </template>
 
-          <template x-if="user_role === 'admin'">
-            <div>
-              <div class="pt-2 pb-1">
-                <p class="px-4 text-xs font-bold text-blue-400 uppercase tracking-wider">Admin Area</p>
-              </div>
+            <div class="pt-4 pb-1"><p class="px-4 text-xs font-bold text-blue-400 uppercase tracking-wider">Transaksi</p></div>
 
-              <button
-                @click="submenu.admin = !submenu.admin"
-                class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100"
-                :class="isAdminPesananActive ? 'bg-blue-800/50' : ''"
-              >
-                <div class="flex items-center gap-3">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-14 7h14"></path>
-                  </svg>
-                  <span>Kelola Pesanan</span>
-                </div>
-                <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.admin ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </button>
-
-              <div x-show="submenu.admin" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
-                <template x-for="item in adminPesananMenu" :key="item.page">
-                  <a
-                    href="#"
-                    @click.prevent="currentPage = item.page"
-                    class="block px-4 py-2 text-sm rounded-r-lg transition-colors"
-                    :class="currentPage === item.page ? 'text-white font-semibold bg-blue-700/50' : 'text-blue-300 hover:text-white hover:bg-blue-800/30'"
-                    x-text="item.label"
-                  >
-                  </a>
-                </template>
-              </div>
-
-              <button
-                @click="submenu.master = !submenu.master"
-                class="w-full flex items-center justify-between px-4 py-3 mt-1 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100"
-                :class="isMasterDataActive ? 'bg-blue-800/50' : ''"
-              >
-                <div class="flex items-center gap-3">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-                    ></path>
-                  </svg>
-                  <span>Master Data</span>
-                </div>
-                <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.master ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </button>
-
-              <div x-show="submenu.master" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
-                <template x-for="item in adminMasterMenu" :key="item.page">
-                  <a
-                    :href="item.url ? item.url : '#'"
-                    @click="item.url ? true : (event.preventDefault(), currentPage = item.page)"
-                    class="block px-4 py-2 text-sm rounded-r-lg transition-colors"
-                    :class="currentPage === item.page ? 'text-white font-semibold bg-blue-700/50' : 'text-blue-300 hover:text-white hover:bg-blue-800/30'"
-                    x-text="item.label"
-                  >
-                  </a>
-                </template>
-              </div>
-
-              <template x-for="menu in adminStaticMenu" :key="menu.page">
-                <a
-                  href="#"
-                  @click.prevent="currentPage = menu.page"
-                  class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200"
-                  :class="currentPage === menu.page ? 'bg-biru-utama font-semibold shadow-lg' : 'hover:bg-blue-800 text-blue-100'"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-html="menu.icon"></svg>
-                  <span x-text="menu.label"></span>
-                </a>
-              </template>
-            </div>
-          </template>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 bg-biru-utama font-semibold shadow-lg text-white">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+              <span>Beli Paket</span>
+            </a>
+          </div>
         </nav>
 
         <div class="p-4 border-t border-blue-600/50 bg-blue-900/20">
-          <a href="../index.html" class="flex items-center justify-center w-full py-2 mb-2 text-sm font-medium text-blue-200 hover:text-white transition-colors">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-            </svg>
-            Ke Beranda
-          </a>
           <button @click="logout" class="flex items-center justify-center w-full px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition shadow-md">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -235,172 +115,81 @@
         </header>
 
         <main class="flex-grow p-6 md:p-10">
-          <div x-show="currentPage === 'dashboard'">
-            <h1 class="text-3xl font-bold text-biru-teks mb-2">Selamat Datang, <span x-text="username"></span>!</h1>
-            <p class="text-gray-500 mb-8">Berikut adalah ringkasan aktivitas hari ini.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-gray-500 mb-1">Total Pesanan</p>
-                  <h3 class="text-2xl font-bold text-gray-800">12</h3>
-                </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                </div>
-              </div>
-
-              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-gray-500 mb-1">Sedang Proses</p>
-                  <h3 class="text-2xl font-bold text-orange-600">4</h3>
-                </div>
-                <div class="p-3 bg-orange-50 text-orange-600 rounded-lg">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-              </div>
-
-              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-gray-500 mb-1" x-text="user_role === 'admin' ? 'Total Pendapatan' : 'Total Pengeluaran'"></p>
-                  <h3 class="text-2xl font-bold text-green-600">Rp 450.000</h3>
-                </div>
-                <div class="p-3 bg-green-50 text-green-600 rounded-lg">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-biru-teks">Pilih Paket Laundry</h1>
+            <p class="text-gray-500 mt-2">Berlangganan paket untuk harga yang lebih hemat dan praktis.</p>
           </div>
 
-          <div x-show="currentPage === 'user_transaksi_paket'" x-cloak>
-            <div class="mb-6">
-              <h1 class="text-3xl font-bold text-biru-teks">Pilih Paket Laundry</h1>
-              <p class="text-gray-500 mt-2">Hemat biaya dengan berlangganan paket kuota.</p>
+          <template x-if="isLoading">
+            <div class="flex flex-col items-center justify-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
+              <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+              <p class="text-gray-500">Memuat paket...</p>
             </div>
+          </template>
 
-            <template x-if="isLoadingPackages">
-              <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
-                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p class="text-gray-500">Sedang memuat paket terbaru...</p>
-              </div>
-            </template>
+          <template x-if="!isLoading && packages.length === 0">
+            <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
+              <p class="text-gray-500 text-lg">Belum ada paket tersedia saat ini.</p>
+            </div>
+          </template>
 
-            <template x-if="!isLoadingPackages && packageList.length === 0">
-              <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
-                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                </svg>
-                <p class="text-gray-500 text-lg">Belum ada paket tersedia saat ini.</p>
-              </div>
-            </template>
-
-            <div x-show="!isLoadingPackages && packageList.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <template x-for="pkg in packageList" :key="pkg.id">
-                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col p-6 relative group overflow-hidden">
-                  <div class="absolute top-0 right-0 bg-blue-500 w-16 h-16 transform rotate-45 translate-x-8 -translate-y-8"></div>
-
+          <div x-show="!isLoading && packages.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="pkg in packages" :key="pkg.id">
+              <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col overflow-hidden group relative">
+                <div class="p-6 flex-grow">
                   <div class="flex justify-between items-start mb-4">
-                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Hemat</span>
-                    <svg class="w-8 h-8 text-blue-200 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Hemat</span>
+                    <svg class="w-8 h-8 text-gray-200 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
                   </div>
 
                   <h3 class="text-xl font-bold text-gray-800 mb-2" x-text="pkg.name"></h3>
-                  <p class="text-gray-500 text-sm mb-6 flex-grow" x-text="pkg.description || 'Tidak ada deskripsi tambahan.'"></p>
+                  <p class="text-gray-500 text-sm mb-6 h-12 overflow-hidden" x-text="pkg.description || 'Tidak ada deskripsi'"></p>
 
-                  <div class="border-t border-gray-100 pt-4">
-                    <div class="mb-1">
-                      <p class="text-xs text-gray-400 uppercase font-semibold">Harga Paket</p>
-                      <p class="text-2xl font-bold text-biru-teks" x-text="formatRupiah(pkg.price)"></p>
-                    </div>
-                    <div class="mb-4 flex items-center gap-2">
-                      <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
-                        ></path>
-                      </svg>
-                      <span class="text-sm text-gray-600">Kuota: <span class="font-bold text-gray-800" x-text="pkg.quota + ' Kg/Pcs'"></span></span>
-                    </div>
-
-                    <button @click="openPackageModal(pkg)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2">
-                      <span>Beli Sekarang</span>
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </button>
+                  <div class="flex flex-col mb-2">
+                    <span class="text-xs text-gray-400 uppercase">Harga</span>
+                    <span class="text-2xl font-bold text-biru-teks" x-text="formatRupiah(pkg.price)"></span>
                   </div>
+                  <div class="text-sm text-gray-500 bg-gray-50 p-2 rounded-lg inline-block border border-gray-100">Kuota: <span class="font-bold text-gray-800" x-text="pkg.quota + ' Kg/Pcs'"></span></div>
                 </div>
-              </template>
-            </div>
-          </div>
 
-          <div x-show="currentPage !== 'dashboard' && currentPage !== 'user_transaksi_paket'" x-cloak>
-            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100 text-center py-20">
-              <div class="mb-4 text-blue-100">
-                <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  ></path>
-                </svg>
+                <div class="p-4 bg-gray-50 border-t border-gray-100">
+                  <button @click="openConfirmModal(pkg)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm">
+                    <span>Beli Sekarang</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                  </button>
+                </div>
               </div>
-              <h2 class="text-2xl font-bold text-gray-800 mb-2">Halaman <span class="text-blue-600 capitalize" x-text="currentPage.replace(/_/g, ' ')"></span></h2>
-              <p class="text-gray-500">Fitur ini sedang dalam tahap pengembangan.</p>
-              <button @click="currentPage = 'dashboard'" class="mt-6 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 font-medium transition-colors">Kembali ke Dashboard</button>
-            </div>
+            </template>
           </div>
         </main>
       </div>
 
-      <div x-show="isSidebarOpen" @click="isSidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-black/50 z-20 md:hidden"></div>
-
       <div x-show="isModalOpen" style="display: none" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" x-transition.opacity>
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all" @click.away="isModalOpen = false">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all" @click.away="closeModal()">
           <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
             <h3 class="font-bold text-gray-800 text-lg">Konfirmasi Pembelian</h3>
-            <button @click="isModalOpen = false" class="text-gray-400 hover:text-gray-600">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <button @click="closeModal()" class="text-gray-400 hover:text-gray-600">&times;</button>
           </div>
 
           <div class="p-6">
-            <div class="text-center mb-6">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 text-blue-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-              </div>
-              <p class="text-gray-600">Anda akan melakukan pembelian paket:</p>
-              <h4 class="text-xl font-bold text-biru-teks mt-1" x-text="selectedPackage?.name"></h4>
-            </div>
+            <p class="text-gray-600 mb-6 text-center">Apakah Anda yakin ingin membeli paket ini?</p>
 
-            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-6 space-y-2">
-              <div class="flex justify-between">
-                <span class="text-gray-500 text-sm">Kuota Paket</span>
-                <span class="font-semibold text-gray-800" x-text="selectedPackage?.quota + ' Kg/Pcs'"></span>
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
+              <div class="flex justify-between mb-2">
+                <span class="text-gray-500 text-sm">Paket</span>
+                <span class="font-semibold text-biru-teks" x-text="selectedPackage?.name"></span>
               </div>
-              <div class="flex justify-between pt-2 border-t border-gray-200 mt-2">
-                <span class="text-gray-800 font-bold">Total Pembayaran</span>
+              <div class="flex justify-between pt-2 border-t border-blue-200 mt-2">
+                <span class="text-gray-800 font-bold">Total Harga</span>
                 <span class="font-bold text-blue-600 text-lg" x-text="selectedPackage ? formatRupiah(selectedPackage.price) : 0"></span>
               </div>
             </div>
 
             <div class="flex gap-3 justify-end">
-              <button @click="isModalOpen = false" class="px-4 py-2 text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg font-medium transition-colors">Batal</button>
-              <button
-                @click="processTransaction"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md font-medium flex items-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-                :disabled="isProcessing"
-              >
+              <button @click="closeModal()" class="px-4 py-2 text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg font-medium transition-colors">Batal</button>
+              <button @click="processTransaction" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md font-medium flex items-center gap-2 transition-colors disabled:opacity-70" :disabled="isProcessing">
                 <span x-show="isProcessing" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
                 <span x-text="isProcessing ? 'Memproses...' : 'Bayar Sekarang'"></span>
               </button>
@@ -409,7 +198,5 @@
         </div>
       </div>
     </div>
-
-    <script src="script.js"></script>
   </body>
 </html>

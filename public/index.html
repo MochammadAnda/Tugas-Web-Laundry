@@ -108,7 +108,7 @@
 
           <template x-if="isLoggedIn">
             <div class="flex flex-col items-center gap-4">
-              <a href="dashboard.html" class="text-blue-400 text-2xl font-semibold flex items-center gap-2">
+              <a href="./dashboard/index.html" class="text-blue-400 text-2xl font-semibold flex items-center gap-2">
                 Cek Pesanan
                 <span x-show="notificationCount > 0" class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse" x-text="notificationCount + ' Selesai'"></span>
               </a>
@@ -164,7 +164,7 @@
                     <p class="text-sm font-bold text-slate-800 leading-tight" x-text="userName"></p>
                   </div>
 
-                  <a href="dashboard.html" class="relative p-2 text-primary hover:bg-blue-50 rounded-full transition group" title="Pesan / Dashboard">
+                  <a href="./dashboard/index.html" class="relative p-2 text-primary hover:bg-blue-50 rounded-full transition group" title="Pesan / Dashboard">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
