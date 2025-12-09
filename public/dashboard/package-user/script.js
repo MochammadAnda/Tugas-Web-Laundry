@@ -22,6 +22,8 @@ document.addEventListener("alpine:init", () => {
     packages: [],
     selectedPackage: null,
     isModalOpen: false,
+    selectedLogs: [],
+    isLogModalOpen: false,
 
     // State Submenu (Untuk Sidebar agar konsisten)
     submenu: {
@@ -87,6 +89,29 @@ document.addEventListener("alpine:init", () => {
         alert("Gagal terhubung ke server.");
       }
     },
+
+    async fetchPackageLog(id) {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:3000/api/user-package/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const result = await response.json();
+
+        if (result.status) {
+          this.selectedLogs = result.data.logs || [];
+          this.isLogModalOpen = true;
+        } else {
+          alert("Gagal mengambil log paket.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Gagal terhubung ke server.");
+      }
+    },
+
 
 
     // --- DATA FETCHING ---
