@@ -1,193 +1,272 @@
 document.addEventListener("alpine:init", () => {
   Alpine.data("orderPage", () => ({
-    // --- CONFIG ---
-    apiServiceUrl: "http://localhost:3000/api/master/service", // Get List Layanan
-    apiUserPackageUrl: "http://localhost:3000/api/user-package", // Get Paket yg dimiliki User
-    apiTransactionUrl: "http://localhost:3000/api/user-order", // Post Order
+    // ==========================
+    // API ENDPOINT
+    // ==========================
+    apiGetService: "http://localhost:3000/api/user-order/get-service",
+    apiGetPackage: "http://localhost:3000/api/user-order/get-user-package",
+    apiCreateOrder: "http://localhost:3000/api/user-order",
+    apiGetMyOrders: "http://localhost:3000/api/user-order",
 
-    // --- STATE ---
-    username: "User",
+
+    // ==========================
+    // AUTH STATE
+    // ==========================
+    token: null,
+    user: null,
+    username: "Guest",
     user_role: "user",
-    isSidebarOpen: false,
-    isLoading: false,
-    isProcessing: false,
 
-    // Data Lists
+    myOrders: [],
+    isLogModalOpen: false,
+    logOrderId: null,
+    orderLogs: [],
+
+
+    // ==========================
+    // DATA & FORM
+    // ==========================
     services: [],
     myPackages: [],
+    isProcessing: false,
 
-    // Form Data
+    totalPrice: 0,
+    selectedServicePrice: 0,
+    trxPending: [],
+    apiGetPending: "http://localhost:3000/api/user-order/get-trx-pending",
+
+
+
     form: {
       service_id: "",
-      qty: "",
-      payment_method: "cash", // 'cash' atau 'package'
-      user_package_id: "", // Diisi jika payment_method = 'package'
+      quantity_kg: "",
+      delivery_method: "PICKUP_DROP",
+      address: "",
+      payment_method: "cash",
+      user_package_id: "",
     },
 
-    // Sidebar Configuration
-    submenu: { user: true }, // Menu user terbuka
-
+    // ==========================
+    // INIT
+    // ==========================
     init() {
       this.checkAuth();
       this.fetchServices();
-      this.fetchMyPackages();
+      this.fetchMyOrders();
+      this.fetchPendingTrx();
     },
 
-    // --- AUTH ---
+    // ==========================
+    // AUTH CHECK
+    // ==========================
     checkAuth() {
-      const token = localStorage.getItem("token");
+      this.token = localStorage.getItem("token");
       const userStr = localStorage.getItem("user");
-      if (!token || !userStr) {
-        window.location.href = "../../index.html";
+
+      if (!this.token || !userStr) {
+        this.logout();
         return;
       }
-      try {
-        const user = JSON.parse(userStr);
-        this.username = user.username || user.name || "Member";
-        this.user_role = user.role;
-        if (this.user_role === "admin") window.location.href = "../../admin/index.html";
-      } catch (e) {
+
+      // Decode JWT
+      const payload = this.parseJwt(this.token);
+      if (!payload || payload.exp * 1000 < Date.now()) {
         this.logout();
+        return;
       }
+
+      // Simpan user
+      this.user = JSON.parse(userStr);
+      this.username = this.user.username || this.user.name || "User";
+      this.user_role = this.user.role || "user";
     },
 
     logout() {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "../../index.html";
+      window.location.href = "../index.html";
     },
 
-    // --- FETCH DATA ---
-    async fetchServices() {
-      const token = localStorage.getItem("token");
+    parseJwt(token) {
       try {
-        const response = await fetch(this.apiServiceUrl, {
-          headers: { Authorization: `Bearer ${token}` },
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          window
+            .atob(base64)
+            .split("")
+            .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+        );
+        return JSON.parse(jsonPayload);
+      } catch (err) {
+        return null;
+      }
+    },
+
+    // ==========================
+    // GET SERVICES
+    // ==========================
+    async fetchServices() {
+      try {
+        const res = await fetch(this.apiGetService, {
+          headers: { Authorization: `Bearer ${this.token}` },
         });
-        const result = await response.json();
-        if (result.status) this.services = result.data;
-      } catch (error) {
-        console.error("Error services", error);
+
+        const json = await res.json();
+        if (json.status) this.services = json.data;
+      } catch (err) {
+        console.error("ERR SERVICE:", err);
       }
     },
 
-    // async fetchMyPackages() {
-    //   const token = localStorage.getItem("token");
-    //   try {
-    //     // Mengambil daftar paket yang SUDAH DIBELI oleh user
-    //     const response = await fetch(this.apiUserPackageUrl, {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
-    //     const result = await response.json();
+    // ==========================
+    // GET PACKAGES
+    // ==========================
+    async fetchUserPackages() {
+      const qty = this.form.quantity_kg;
+      if (!qty) return;
 
-    //     // Asumsi: result.data mengembalikan array paket milik user
-    //     if (result.status) {
-    //       // Cek struktur: apakah result.data array? atau result.data.userPackages?
-    //       // Menggunakan fallback aman:
-    //       this.myPackages = Array.isArray(result.data) ? result.data : result.data.userPackages || [];
-    //     }
-    //   } catch (error) {
-    //     console.error("Error user packages", error);
-    //   }
-    // },
+      try {
+        const res = await fetch(`${this.apiGetPackage}/${qty}`, {
+          headers: { Authorization: `Bearer ${this.token}` },
+        });
 
-    async fetchMyPackages() {
-      // Simulasi delay ambil paket user
-      console.log("Fetching dummy user packages...");
-      setTimeout(() => {
-        this.myPackages = [
-          {
-            id: 101,
-            remaining_quota: 8.5,
-            package: { name: "Paket Hemat 10KG" },
-          },
-          {
-            id: 102,
-            remaining_quota: 20,
-            package: { name: "Paket Setrika 50 PCS" },
-          },
-        ];
-      }, 500);
+        const json = await res.json();
+        this.myPackages = json.status ? json.data : [];
+      } catch (err) {
+        console.error("ERR PACKAGE:", err);
+      }
     },
 
-    // --- SUBMIT ORDER ---
+    async fetchMyOrders() {
+      try {
+        const res = await fetch(this.apiGetMyOrders, {
+          headers: { Authorization: `Bearer ${this.token}` }
+        });
+        const json = await res.json();
+        if (json.status) {
+          this.myOrders = json.data.orders || [];
+        }
+      } catch (err) {
+        console.error("ERR FETCH MY ORDERS:", err);
+      }
+    },
+
+    async viewLog(orderId) {
+      this.isLogModalOpen = true;
+      this.logOrderId = orderId;
+      this.orderLogs = [];
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/user-order/${orderId}`, {
+          headers: { Authorization: `Bearer ${this.token}` }
+        });
+        const json = await res.json();
+        if (json.status) {
+          this.orderLogs = json.data.orderLogs || [];
+        }
+      } catch (err) {
+        console.error("ERR FETCH ORDER LOG:", err);
+        alert("Gagal mengambil log order.");
+      }
+    },
+
+    watchQuantity() {
+      if (this.form.payment_method === "package") {
+        this.fetchUserPackages();
+      }
+    },
+
+    watchPayment() {
+      if (this.form.payment_method === "package" && this.form.quantity_kg) {
+        this.fetchUserPackages();
+      }
+    },
+    updatePrice() {
+      const svc = this.services.find(s => s.id == this.form.service_id);
+      if (!svc) {
+        this.selectedServicePrice = 0;
+        this.totalPrice = 0;
+        return;
+      }
+
+      this.selectedServicePrice = Number(svc.price_per_unit);
+      this.totalPrice = this.selectedServicePrice * Number(this.form.quantity_kg || 0);
+    },
+
+    async fetchPendingTrx() {
+      try {
+        const res = await fetch(this.apiGetPending, {
+          headers: { Authorization: `Bearer ${this.token}` },
+        });
+
+        const json = await res.json();
+        this.trxPending = json.status ? json.data : [];
+      } catch (err) {
+        console.error("ERR PENDING:", err);
+      }
+    },
+
+    // ==========================
+    // SUBMIT ORDER
+    // ==========================
     async submitOrder() {
-      // Validasi Input
-      if (!this.form.service_id || !this.form.qty) {
-        alert("Harap lengkapi layanan dan jumlah laundry.");
+      if (!this.form.service_id || !this.form.quantity_kg) {
+        alert("Harap lengkapi layanan & jumlah.");
         return;
       }
 
-      // Validasi Khusus Paket
       if (this.form.payment_method === "package" && !this.form.user_package_id) {
-        alert("Harap pilih paket kuota yang ingin digunakan.");
+        alert("Harap pilih paket kuota.");
         return;
+      }
+
+      let payload = {
+        service_id: Number(this.form.service_id),
+        quantity_kg: Number(this.form.quantity_kg),
+        delivery_method: this.form.delivery_method,
+        address: this.form.address,
+      };
+
+      if (this.form.payment_method === "package") {
+        payload.user_package_id = Number(this.form.user_package_id);
       }
 
       this.isProcessing = true;
-      const token = localStorage.getItem("token");
-
-      // Persiapan Payload
-      const payload = {
-        type: "ORDER",
-        service_id: parseInt(this.form.service_id),
-        qty: parseFloat(this.form.qty),
-      };
-
-      // Jika pakai paket, tambahkan user_package_id agar backend memotong kuota
-      if (this.form.payment_method === "package") {
-        payload.user_package_id = parseInt(this.form.user_package_id);
-      }
 
       try {
-        const response = await fetch(this.apiTransactionUrl, {
+        const res = await fetch(this.apiCreateOrder, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            Authorization: `Bearer ${this.token}`,
           },
           body: JSON.stringify(payload),
         });
 
-        const result = await response.json();
+        const json = await res.json();
 
-        if (result.status) {
-          const data = result.data;
-
-          // SKENARIO 1: Potong Kuota (Status SUCCESS)
-          if (data.status === "SUCCESS" && parseInt(data.total_price) === 0) {
-            alert(`✅ Order Berhasil!\nKuota paket telah dikurangi.\nID Order: ${data.id}`);
-          }
-          // SKENARIO 2: Bayar Normal (Status PENDING)
-          else {
-            const harga = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(data.total_price);
-            alert(`📝 Order Dibuat (Pending)\nSilakan lakukan pembayaran sebesar: ${harga}\nID Order: ${data.id}`);
-          }
-
-          // Reset Form
-          this.form = { service_id: "", qty: "", payment_method: "cash", user_package_id: "" };
-          // Opsional: Redirect ke riwayat
-          // window.location.href = "../history/index.html";
+        if (json.status) {
+          alert("Pesanan berhasil dibuat!");
+          window.location.reload();
         } else {
-          alert("Gagal: " + (result.message || "Kesalahan sistem"));
+          alert(json.message || "Gagal membuat order");
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
         alert("Terjadi kesalahan jaringan.");
-      } finally {
-        this.isProcessing = false;
       }
+
+      this.isProcessing = false;
     },
 
-    // Helper untuk menampilkan detail paket di dropdown
     getPackageName(pkg) {
-      // Sesuaikan properti ini dengan response API user-package Anda
-      // Misal: pkg.package.name atau pkg.name
-      return pkg.name || pkg.package?.name || "Paket Laundry";
+      return `Paket ID ${pkg.package_id || pkg.id}`;
     },
 
     getPackageQuota(pkg) {
-      return pkg.remaining_quota || pkg.quota || 0;
+      return pkg.quota;
     },
   }));
 });
