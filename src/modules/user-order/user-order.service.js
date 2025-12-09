@@ -91,3 +91,35 @@ export const store = async ({ user_id, service_id, quantity_kg, delivery_method,
     }
     return newTransaction;
 }
+
+export const getService = async() => {
+    const data = await prisma.mService.findMany();
+    return data;
+}
+
+export const getUserPackage = async({user_id, quota}) => {
+    const data = await prisma.userPackage.findMany({
+        where: {
+            user_id,
+            quota: {
+                gte: quota
+            },
+            expired_at: {
+                gte: new Date()
+            }
+        }
+    })
+
+    return data;
+}
+
+export const getTrxPending = async(user_id) => {
+    const data = await prisma.transaction.findMany({
+        where: {
+            user_id,
+            status: "PENDING",
+            type: "ORDER"
+        }
+    })
+    return data;
+}
