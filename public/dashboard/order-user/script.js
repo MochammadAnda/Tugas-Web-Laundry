@@ -8,7 +8,6 @@ document.addEventListener("alpine:init", () => {
     apiCreateOrder: "http://localhost:3000/api/user-order",
     apiGetMyOrders: "http://localhost:3000/api/user-order",
 
-
     // ==========================
     // AUTH STATE
     // ==========================
@@ -22,7 +21,6 @@ document.addEventListener("alpine:init", () => {
     logOrderId: null,
     orderLogs: [],
 
-
     // ==========================
     // DATA & FORM
     // ==========================
@@ -34,8 +32,6 @@ document.addEventListener("alpine:init", () => {
     selectedServicePrice: 0,
     trxPending: [],
     apiGetPending: "http://localhost:3000/api/user-order/get-trx-pending",
-
-
 
     form: {
       service_id: "",
@@ -95,7 +91,7 @@ document.addEventListener("alpine:init", () => {
           window
             .atob(base64)
             .split("")
-            .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
             .join("")
         );
         return JSON.parse(jsonPayload);
@@ -120,25 +116,6 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-<<<<<<< HEAD
-    async fetchMyPackages() {
-      const token = localStorage.getItem("token");
-      try {
-        // Mengambil daftar paket yang SUDAH DIBELI oleh user
-        const response = await fetch(this.apiUserPackageUrl, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const result = await response.json();
-
-        // Asumsi: result.data mengembalikan array paket milik user
-        if (result.status) {
-          // Cek struktur: apakah result.data array? atau result.data.userPackages?
-          // Menggunakan fallback aman:
-          this.myPackages = Array.isArray(result.data) ? result.data : result.data.userPackages || [];
-        }
-      } catch (error) {
-        console.error("Error user packages", error);
-=======
     // ==========================
     // GET PACKAGES
     // ==========================
@@ -155,14 +132,13 @@ document.addEventListener("alpine:init", () => {
         this.myPackages = json.status ? json.data : [];
       } catch (err) {
         console.error("ERR PACKAGE:", err);
->>>>>>> 67d4424096e56907efd94223b03b44b28e65fa36
       }
     },
 
     async fetchMyOrders() {
       try {
         const res = await fetch(this.apiGetMyOrders, {
-          headers: { Authorization: `Bearer ${this.token}` }
+          headers: { Authorization: `Bearer ${this.token}` },
         });
         const json = await res.json();
         if (json.status) {
@@ -180,7 +156,7 @@ document.addEventListener("alpine:init", () => {
 
       try {
         const res = await fetch(`http://localhost:3000/api/user-order/${orderId}`, {
-          headers: { Authorization: `Bearer ${this.token}` }
+          headers: { Authorization: `Bearer ${this.token}` },
         });
         const json = await res.json();
         if (json.status) {
@@ -204,7 +180,7 @@ document.addEventListener("alpine:init", () => {
       }
     },
     updatePrice() {
-      const svc = this.services.find(s => s.id == this.form.service_id);
+      const svc = this.services.find((s) => s.id == this.form.service_id);
       if (!svc) {
         this.selectedServicePrice = 0;
         this.totalPrice = 0;
