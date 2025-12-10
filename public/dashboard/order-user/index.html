@@ -7,6 +7,7 @@
   <title>Order Laundry - SuperLaundry</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="./script.js"></script>
 
@@ -76,6 +77,32 @@
         </a>
 
         <div>
+          <button @click="submenu.user = !submenu.user"
+            class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100 bg-blue-800/50">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+              </svg>
+              <span>Pemesanan</span>
+            </div>
+            <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.user ? 'rotate-90' : ''" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+
+          <div x-show="submenu.user" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
+            <a href="../../index.html"
+              class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Buat
+              Pesanan Baru</a>
+            <a href="../../index.html"
+              class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Status
+              Pesanan</a>
+            <a href="../../index.html"
+              class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Riwayat
+              Pesanan</a>
+          </div>
+
           <div class="pt-4 pb-1">
             <p class="px-4 text-xs font-bold text-blue-400 uppercase tracking-wider">Transaksi</p>
           </div>

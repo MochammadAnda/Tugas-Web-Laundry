@@ -42,6 +42,11 @@ document.addEventListener("alpine:init", () => {
       user_package_id: "",
     },
 
+    // State Submenu (Untuk Sidebar agar konsisten)
+    submenu: {
+      user: true, // Menu user default terbuka di halaman ini
+    },
+
     // ==========================
     // INIT
     // ==========================
