@@ -65,9 +65,34 @@
             <span>Dashboard</span>
           </a>
 
-          <div>
-            <div class="pt-2 pb-1">
-              <p class="px-4 text-xs font-bold text-blue-400 uppercase tracking-wider">Kelola Transaksi</p>
+          <div class="mt-2">
+            <div>
+              <div class="pt-2 pb-1">
+                <p class="px-4 text-xs font-bold text-blue-400 uppercase tracking-wider">ADMIN AREA</p>
+              </div>
+
+              <button @click="submenu.master = !submenu.master" class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100 bg-blue-800/50">
+                <div class="flex items-center gap-3">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                    ></path>
+                  </svg>
+                  <span>Master Data</span>
+                </div>
+                <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.master ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+              <div x-show="submenu.master" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
+                <a href="/dashboard/master-data/assets/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Assets</a>
+                <a href="/dashboard/master-data/expenses/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Expense</a>
+                <a href="/dashboard/master-data/packages/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Package</a>
+                <a href="/dashboard/master-data/services/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Service</a>
+              </div>
             </div>
 
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 bg-biru-utama font-semibold shadow-lg text-white">
@@ -76,31 +101,6 @@
               </svg>
               <span>Transaksi Paket</span>
             </a>
-          </div>
-
-          <div class="mt-2">
-            <button @click="submenu.master = !submenu.master" class="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-blue-100 bg-blue-800/50">
-              <div class="flex items-center gap-3">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-                  ></path>
-                </svg>
-                <span>Master Data</span>
-              </div>
-              <svg class="w-4 h-4 transition-transform duration-200" :class="submenu.master ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </button>
-            <div x-show="submenu.master" x-collapse class="pl-4 mt-1 space-y-1 border-l-2 border-blue-600 ml-4">
-              <a href="/dashboard/master-data/assets/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Assets</a>
-              <a href="/dashboard/master-data/expenses/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Expense</a>
-              <a href="/dashboard/master-data/packages/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Package</a>
-              <a href="/dashboard/master-data/services/index.html" class="block px-4 py-2 text-sm rounded-r-lg transition-colors text-blue-300 hover:text-white hover:bg-blue-800/30">Service</a>
-            </div>
           </div>
         </nav>
 
